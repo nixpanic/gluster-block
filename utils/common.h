@@ -17,6 +17,7 @@
 # define  GB_LOGDIR        DATADIR "/log/gluster-block"
 # define  GB_INFODIR       DATADIR "/run"
 
+# define  GB_PID_FILE      GB_INFODIR "/gluster-blockd.pid"
 # define  GB_UNIX_ADDRESS  GB_INFODIR "/gluster-block.socket"
 # define  GB_TCP_PORT      24006
 

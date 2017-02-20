@@ -8,6 +8,8 @@
   cases as published by the Free Software Foundation.
 */
 
+
+# include  <fcntl.h>
 # include  <dirent.h>
 # include  <sys/stat.h>
 # include  <pthread.h>
@@ -16,6 +18,32 @@
 # include  "common.h"
 # include  "block.h"
 
+
+
+static bool
+isGlusterBlockDaemonRunning(void)
+{
+  int fd;
+  struct flock lock = {0, };
+
+
+  fd = creat(GB_PID_FILE, S_IRUSR | S_IWUSR);
+  if (!fd) {
+    LOG("mgmt", GB_LOG_ERROR, "creat(%s) failed[%s]",
+        GB_PID_FILE, strerror(errno));
+    goto out;
+  }
+  lock.l_type = F_WRLCK;
+  if (fcntl(fd, F_SETLK, &lock) == -1) {
+    LOG("mgmt", GB_LOG_ERROR, "%s",
+        "gluster-blockd is already running...");
+    close(fd);
+    return TRUE;
+  }
+
+ out:
+  return FALSE;
+}
 
 
 static bool
@@ -171,8 +199,13 @@ main (int argc, char **argv)
   pthread_t cli_thread;
   pthread_t server_thread;
 
+
   if (!glusterBlockLogdirCreate()) {
     return -1;
+  }
+
+  if (isGlusterBlockDaemonRunning()) {
+    exit (1);
   }
 
 	pmap_unset(GLUSTER_BLOCK_CLI, GLUSTER_BLOCK_CLI_VERS);
