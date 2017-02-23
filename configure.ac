@@ -11,7 +11,7 @@ AC_PREREQ([2.69])
 AC_INIT([gluster-block],
         m4_esyscmd(echo -n `git describe --always --tags`),
         [pkalever@redhat.com],,
-        [https://github.com/pkalever/gluster-block.git])
+        [https://github.com/gluster/gluster-block.git])
 
 AC_SUBST([PACKAGE_RELEASE], 1)
 
